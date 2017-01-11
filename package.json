@@ -1,0 +1,26 @@
+{
+  "name": "ioc-container",
+  "version": "1.0.0",
+  "description": "Plugin based mini core framework, combining InversifyJS with Extension Point pattern",
+  "main": "lib/ioc-container.js",
+  "typings": "./dts/ioc-container.d.ts",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "inversify": "^3.0.0-rc.4"
+  },
+  "devDependencies": {
+    "gulp": "*",
+    "gulp-sourcemaps": "*",
+    "gulp-tslint": "*",
+    "gulp-typescript": "*",
+    "typescript": "*",
+    "tslint": "*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Antonius Ostermann",
+  "license": "ISC"
+}
