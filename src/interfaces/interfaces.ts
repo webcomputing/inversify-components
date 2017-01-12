@@ -38,6 +38,8 @@ export interface LookupService {
 export interface ComponentRegistry extends LookupService {
   readonly _registeredComponents: { [name: string]: Component};
   add(component: Component): void;
+  addFromDescriptor(descriptor: ComponentDescriptor): void;
+  autobind(container: Container, except?: string[]): void;
   getBinder(componentName: string, container: Container): ComponentBinder;
 }
 
@@ -52,7 +54,7 @@ export interface Container extends GeneralBind {
 // Helper interfaces for callbacks and so on..
 
 // Define how to bindings between symbol an
-interface BindingDescriptor {
+export interface BindingDescriptor {
   (bindService: ComponentBinder, lookupService: LookupService): void;
 }
 
