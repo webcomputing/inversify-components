@@ -1,4 +1,5 @@
 import { Component, ComponentBinder as ComponentBinderInterface, Container, ExecutableExtension } from "../interfaces/interfaces";
+import { interfaces as inversifyInterfaces } from "inversify";
 
 export class ComponentBinder implements ComponentBinderInterface {
   private component: Component;

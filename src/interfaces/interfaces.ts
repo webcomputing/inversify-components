@@ -58,6 +58,6 @@ export interface BindingDescriptor {
   (bindService: ComponentBinder, lookupService: LookupService): void;
 }
 
-interface GeneralBind {
+export interface GeneralBind {
   bind<T>(extensionPoint: string): inversifyInterfaces.BindingToSyntax<T>;
 }
