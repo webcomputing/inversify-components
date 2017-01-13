@@ -1,6 +1,7 @@
 import { ComponentRegistry as ComponentRegistryInterface, Component, Container, ComponentDescriptor, BindingDescriptor } from "../interfaces/interfaces";
 import { ComponentBinder } from "./binder";
 import { Component as ComponentImpl } from "./component";
+import debug from "../debug-config";
 
 export class ComponentRegistry implements ComponentRegistryInterface {
   readonly registeredComponents: { [name: string]: Component} = {};
@@ -27,17 +28,22 @@ export class ComponentRegistry implements ComponentRegistryInterface {
       throw new Error("Component " + component.name + " is already registered!");
     }
 
+    debug("Adding component " + component.name + "to registry..");
     this.registeredComponents[component.name] = component;
   }
 
   addFromDescriptor(descriptor: ComponentDescriptor) {
     let extensionPoints = descriptor.hasOwnProperty("extensionPoints") ? descriptor.extensionPoints : {};
     this.add(new ComponentImpl(descriptor.name, extensionPoints));
+
+    debug("Registering bindings for " + descriptor.name + "..");
     this.registeredBindings[descriptor.name] = descriptor.bindings;
   }
 
   autobind(container: Container, except = []) {
+    debug("Autobind started with exceptions = %j", except);
     Object.keys(this.registeredBindings).filter(k => except.indexOf(k) === -1).forEach(componentName => {
+      debug("Executing bindings for " + componentName + "..");
       this.registeredBindings[componentName](this.getBinder(componentName, container), this);
     });
   }
