@@ -10,11 +10,11 @@ export class ComponentBinder implements ComponentBinderInterface {
     this.container = container;
   }
 
-  public bind<T>(identifier: string) {
-    return this.container.bind<T>(this.component.name + ":" + identifier);
+  bindExtension<T>(extensionPoint: symbol) {
+    return this.container.bind<T>(extensionPoint);
   }
 
-  public bindExecutable(extensionPoint: string, extensionClass: { new (...args: any[]): ExecutableExtension; }) {
-    return this.bind<ExecutableExtension>(extensionPoint).to(extensionClass);
+  bindExecutable(extensionPoint: symbol, extensionClass: { new (...args: any[]): ExecutableExtension; }) {
+    return this.bindExtension<ExecutableExtension>(extensionPoint).to(extensionClass);
   }
 }

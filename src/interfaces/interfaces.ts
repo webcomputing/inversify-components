@@ -11,13 +11,14 @@ export interface ExecutableExtension {
 // ComponentDescriptor.
 export interface Component {
   readonly name: string;
-  readonly extensionPoints: string[];
-  // TODO: readonly consumes: string[]; - currently only in concept
+  readonly extensionPoints: { [name: string]: symbol };
+  getExtensionPoint(name: string): symbol;
 }
 
 // General interface to bind sth via dependency injection
-export interface ComponentBinder extends GeneralBind {
-  bindExecutable(extensionPoint: string, extensionClass: { new (...args: any[]): ExecutableExtension; }): inversifyInterfaces.BindingWhenOnSyntax<ExecutableExtension>;
+export interface ComponentBinder {
+  bindExtension<T>(extensionPoint: symbol): inversifyInterfaces.BindingToSyntax<T>;
+  bindExecutable(extensionPoint: symbol, extensionClass: { new (...args: any[]): ExecutableExtension; }): inversifyInterfaces.BindingWhenOnSyntax<ExecutableExtension>;
 }
 
 // This is the method you get to describe your component on initialization
@@ -25,7 +26,7 @@ export interface ComponentBinder extends GeneralBind {
 // own consumptions / bindings.
 export interface ComponentDescriptor {
   name: string;
-  extensionPoints: string[];
+  extensionPoints?: { [name: string]: symbol };
   bindings: BindingDescriptor;
 }
 
@@ -36,7 +37,7 @@ export interface LookupService {
 }
 
 export interface ComponentRegistry extends LookupService {
-  readonly _registeredComponents: { [name: string]: Component};
+  readonly registeredComponents: { [name: string]: Component};
   add(component: Component): void;
   addFromDescriptor(descriptor: ComponentDescriptor): void;
   autobind(container: Container, except?: string[]): void;
@@ -44,10 +45,11 @@ export interface ComponentRegistry extends LookupService {
 }
 
 // Main container class
-export interface Container extends GeneralBind {
+export interface Container {
   readonly componentRegistry: ComponentRegistry;
   readonly inversifyInstance: inversifyInterfaces.Container;
   setMainApplication(extensionClass: { new (...args: any[]): ExecutableExtension; }): void;
+  bind<T>(identifier: any): inversifyInterfaces.BindingToSyntax<T>;
   runMain(): void;
 }
 
@@ -56,8 +58,4 @@ export interface Container extends GeneralBind {
 // Define how to bindings between symbol an
 export interface BindingDescriptor {
   (bindService: ComponentBinder, lookupService: LookupService): void;
-}
-
-export interface GeneralBind {
-  bind<T>(extensionPoint: string): inversifyInterfaces.BindingToSyntax<T>;
 }
