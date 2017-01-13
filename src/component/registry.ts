@@ -28,7 +28,7 @@ export class ComponentRegistry implements ComponentRegistryInterface {
       throw new Error("Component " + component.name + " is already registered!");
     }
 
-    debug("Adding component " + component.name + "to registry..");
+    debug("Adding component " + component.name + " to registry..");
     this.registeredComponents[component.name] = component;
   }
 
@@ -40,11 +40,16 @@ export class ComponentRegistry implements ComponentRegistryInterface {
     this.registeredBindings[descriptor.name] = descriptor.bindings;
   }
 
+  executeBinding(componentName: string, container: Container) {
+    debug("Executing bindings for " + componentName + "..");
+    this.registeredBindings[componentName](this.getBinder(componentName, container), this);
+  }
+
   autobind(container: Container, except = []) {
     debug("Autobind started with exceptions = %j", except);
-    Object.keys(this.registeredBindings).filter(k => except.indexOf(k) === -1).forEach(componentName => {
-      debug("Executing bindings for " + componentName + "..");
-      this.registeredBindings[componentName](this.getBinder(componentName, container), this);
-    });
+    Object.keys(this.registeredBindings)
+      .filter(k => except.indexOf(k) === -1)
+      .forEach(componentName => this.executeBinding(componentName, container));
+    debug("Autobind finished");
   }
 }

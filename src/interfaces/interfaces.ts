@@ -17,6 +17,18 @@ export interface Component {
 
 // General interface to bind sth via dependency injection
 export interface ComponentBinder {
+  /**
+   * Use this method if you want to bind a service locally.
+   * @param serviceSymbol:symbol Use a (more or less) secret symbol which is not exposed to 
+   * the component registry (in contrast to extension points). Only your component should be 
+   * able to read it.
+   */
+  bindLocalService<T>(serviceIdentifier: symbol): inversifyInterfaces.BindingToSyntax<T>;
+  /**
+   * Use this to expose a service to the whole environment.
+   * @param serviceName Your service will be available via componentName:serviceName
+   */
+  bindGlobalService<T>(serviceName: string): inversifyInterfaces.BindingToSyntax<T>;
   bindExtension<T>(extensionPoint: symbol): inversifyInterfaces.BindingToSyntax<T>;
   bindExecutable(extensionPoint: symbol, extensionClass: { new (...args: any[]): ExecutableExtension; }): inversifyInterfaces.BindingWhenOnSyntax<ExecutableExtension>;
 }
@@ -40,6 +52,7 @@ export interface ComponentRegistry extends LookupService {
   readonly registeredComponents: { [name: string]: Component};
   add(component: Component): void;
   addFromDescriptor(descriptor: ComponentDescriptor): void;
+  executeBinding(componentName: string, container: Container): void;
   autobind(container: Container, except?: string[]): void;
   getBinder(componentName: string, container: Container): ComponentBinder;
 }

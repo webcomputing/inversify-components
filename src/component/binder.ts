@@ -10,6 +10,14 @@ export class ComponentBinder implements ComponentBinderInterface {
     this.container = container;
   }
 
+  bindLocalService<T>(serviceSymbol: symbol) {
+    return this.container.bind<T>(serviceSymbol);
+  }
+
+  bindGlobalService<T>(serviceName: string) {
+    return this.container.bind<T>(this.component.name + ":" + serviceName);
+  }
+
   bindExtension<T>(extensionPoint: symbol) {
     return this.container.bind<T>(extensionPoint);
   }
