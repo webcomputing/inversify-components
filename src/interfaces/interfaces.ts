@@ -5,14 +5,6 @@ export interface ExecutableExtension {
   execute(): any;
 }
 
-export interface ExtensionPointDescriptor {
-  [name: string]: symbol;
-}
-
-export interface Configuration {
-  [name: string]: any;
-}
-
 // If you register your component, you will get an instance of this.
 // Every component must have a name, so we need it in the constructor.
 // After setting, the name is not changable anymore. You set the name via the
@@ -21,8 +13,8 @@ export interface Component {
   readonly name: string;
   readonly extensionPoints: ExtensionPointDescriptor;
   getExtensionPoint(name: string): symbol;
-  configuration: Configuration;
-  addConfiguration(configuration: Configuration): void;
+  configuration: {};
+  addConfiguration(configuration: {}): void;
 }
 
 // General interface to bind sth via dependency injection
@@ -49,7 +41,7 @@ export interface ComponentBinder {
 export interface ComponentDescriptor {
   name: string;
   extensionPoints?: ExtensionPointDescriptor;
-  defaultConfiguration?: Configuration;
+  defaultConfiguration?: {};
   bindings: BindingDescriptor;
 }
 
@@ -82,4 +74,8 @@ export interface Container {
 // Define how to bindings between symbol an
 export interface BindingDescriptor {
   (bindService: ComponentBinder, lookupService: LookupService): void;
+}
+
+export interface ExtensionPointDescriptor {
+  [name: string]: symbol;
 }
