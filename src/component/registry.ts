@@ -34,14 +34,16 @@ export class ComponentRegistry implements ComponentRegistryInterface {
 
   addFromDescriptor(descriptor: ComponentDescriptor) {
     let extensionPoints = descriptor.hasOwnProperty("extensionPoints") ? descriptor.extensionPoints : {};
-    this.add(new ComponentImpl(descriptor.name, extensionPoints));
+    let defaultConfig = descriptor.hasOwnProperty("defaultConfiguration") ? descriptor.defaultConfiguration : {};
+    this.add(new ComponentImpl(descriptor.name, extensionPoints, defaultConfig));
 
     debug("Registering bindings for " + descriptor.name + "..");
     this.registeredBindings[descriptor.name] = descriptor.bindings;
   }
 
   executeBinding(componentName: string, container: Container) {
-    debug("Executing bindings for " + componentName + "..");
+    debug("Executing self-bind and registered bindings for " + componentName + "..");
+    container.bind<Component>("meta:component//" + componentName).toConstantValue(this.registeredComponents[componentName]);
     this.registeredBindings[componentName](this.getBinder(componentName, container), this);
   }
 

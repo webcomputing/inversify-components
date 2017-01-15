@@ -1,12 +1,18 @@
-import { Component as ComponentInterface } from "../interfaces/interfaces";
+import { Component as ComponentInterface, ExtensionPointDescriptor, Configuration } from "../interfaces/interfaces";
 
 export class Component implements ComponentInterface {
   readonly name: string;
-  readonly extensionPoints: { [name: string]: symbol } = {};
+  readonly extensionPoints: ExtensionPointDescriptor;
+  private _configuration: Configuration;
 
-  constructor(name: string, extensionPoints: { [name: string]: symbol }) {
+  get configuration() {
+    return this._configuration;
+  }
+
+  constructor(name: string, extensionPoints: ExtensionPointDescriptor = {}, configuration: Configuration = {}) {
     this.name = name;
     this.extensionPoints = extensionPoints;
+    this._configuration = configuration;
   }
 
   getExtensionPoint(name: string) {
@@ -15,5 +21,9 @@ export class Component implements ComponentInterface {
     }
 
     return this.extensionPoints[name];
+  }
+
+  addConfiguration(c: Configuration) {
+    this._configuration = Object.assign(this._configuration, c);
   }
 }
