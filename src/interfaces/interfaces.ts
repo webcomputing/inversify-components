@@ -5,6 +5,72 @@ export interface ExecutableExtension {
   execute(): any;
 }
 
+/* Basic Interfaces for Hooks */
+// TODO: Put this into own package!
+export namespace Hooks {
+  export interface PipeFactory {
+    (hooksExtensionPoint: symbol): Hooks.Pipe;
+  }
+
+  export enum ExecutionMode {
+    Filter,
+    ResultSet,
+    Async
+  }
+
+  export interface ContinuationFunction {
+    (result?: any): void;
+  }
+
+  export interface Hook {
+    (success: ContinuationFunction, failure: ContinuationFunction, mode: ExecutionMode, ...args: any[]): void;
+  }
+
+  export interface ExecutionResult {
+    hook: Hook;
+    result: any;
+  }
+
+  export interface PipeOnFilterFinish {
+    (hooks: ExecutionResult[], passedArguments: any[]): void;
+  }
+
+  export interface PipeOnResultsetFinish {
+    (successfulHooks: ExecutionResult[], unsuccessfulHooks: ExecutionResult[], passedArguments: any[]): void;
+  }
+
+  export interface Pipe {
+    /** List containing all available hooks */
+    hooks: Hook[];
+
+    /** 
+     * withArguments()
+     * Returns a new HookPipe based on this one, but with given arguments
+     * Implements immutable pattern (see Java String) 
+     */
+    withArguments(...args: any[]): Pipe;
+
+    /** 
+     * runAsFilter()
+     * Runs all hooks in this pipe as filter, which means onFinish is only called if all hooks called "success(result: any)".
+     * As soon as one hook answers with failure(), no other hooks are executed anymore, in that case, onFailure() is called, if given.
+     */
+    runAsFilter(onFinish: PipeOnFilterFinish, onFailure?: PipeOnResultsetFinish): void;
+
+    /** 
+     * runWithResultset()
+     * Runs all hooks and calls onFinish afterwards.
+     */
+    runWithResultset(onFinish: PipeOnResultsetFinish): void;
+
+    /**
+     * runForcingAllAsync()
+     * Runs all hooks without waiting for single hooks to finish. Use with caution.
+     */
+    runForcingAllAsync(): void;
+  }
+}
+
 // If you register your component, you will get an instance of this.
 // Every component must have a name, so we need it in the constructor.
 // After setting, the name is not changable anymore. You set the name via the

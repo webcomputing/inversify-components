@@ -3,6 +3,8 @@ import { ComponentRegistry } from "../component/registry";
 import debug from "../debug-config";
 import * as interfaces from "../interfaces/interfaces";
 
+import { descriptor as coreComponentDescriptor } from "../core-component/descriptor";
+
 export class Container implements interfaces.Container {
   readonly inversifyInstance: inversifyInterfaces.Container;
   readonly componentRegistry: interfaces.ComponentRegistry;
@@ -11,6 +13,7 @@ export class Container implements interfaces.Container {
   constructor() {
     this.inversifyInstance = new InversifyContainer();
     this.componentRegistry = new ComponentRegistry();
+    this.bindFrameworkComponent();
   }
 
   public bind<T>(identifier: any) {
@@ -26,5 +29,10 @@ export class Container implements interfaces.Container {
   public runMain() {
     debug("Executing main application...");
     this.inversifyInstance.get<interfaces.ExecutableExtension>(this.mainAppExtension).execute();
+  }
+
+  // TODO: Remove this, put into own package
+  private bindFrameworkComponent() {
+    this.componentRegistry.addFromDescriptor(coreComponentDescriptor);
   }
 }
