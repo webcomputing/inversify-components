@@ -1,26 +1,26 @@
-import { Component as ComponentInterface, ExtensionPointDescriptor } from "../interfaces/interfaces";
+import { Component as ComponentInterface, InterfaceDescriptor } from "../interfaces/interfaces";
 
 export class Component implements ComponentInterface {
   readonly name: string;
-  readonly extensionPoints: ExtensionPointDescriptor;
+  readonly interfaces: InterfaceDescriptor;
   private _configuration: {};
 
   get configuration() {
     return this._configuration;
   }
 
-  constructor(name: string, extensionPoints: ExtensionPointDescriptor = {}, configuration = {}) {
+  constructor(name: string, interfaces: InterfaceDescriptor = {}, configuration = {}) {
     this.name = name;
-    this.extensionPoints = extensionPoints;
+    this.interfaces = interfaces;
     this._configuration = configuration;
   }
 
-  getExtensionPoint(name: string) {
-    if (!this.extensionPoints.hasOwnProperty(name)) {
-      throw new Error("Component " + this.name + " does not offer extension point " + name);
+  getInterface(name: string) {
+    if (!this.interfaces.hasOwnProperty(name)) {
+      throw new Error("Component " + this.name + " does not offer interface symbol " + name);
     }
 
-    return this.extensionPoints[name];
+    return this.interfaces[name];
   }
 
   addConfiguration(c: {}) {

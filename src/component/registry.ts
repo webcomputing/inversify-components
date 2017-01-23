@@ -33,9 +33,9 @@ export class ComponentRegistry implements ComponentRegistryInterface {
   }
 
   addFromDescriptor(descriptor: ComponentDescriptor) {
-    let extensionPoints = descriptor.hasOwnProperty("extensionPoints") ? descriptor.extensionPoints : {};
+    let interfaces = descriptor.hasOwnProperty("interfaces") ? descriptor.interfaces : {};
     let defaultConfig = descriptor.hasOwnProperty("defaultConfiguration") ? descriptor.defaultConfiguration : {};
-    this.add(new ComponentImpl(descriptor.name, extensionPoints, defaultConfig));
+    this.add(new ComponentImpl(descriptor.name, interfaces, defaultConfig));
 
     debug("Registering bindings for " + descriptor.name + "..");
     this.registeredBindings[descriptor.name] = descriptor.bindings;

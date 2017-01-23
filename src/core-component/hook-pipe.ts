@@ -37,11 +37,6 @@ export class HookPipe implements Hooks.Pipe {
       (successful, failed) => onFinish(successful, failed, this.arguments));
   }
 
-  runForcingAllAsync(): void {
-    this.hooks.forEach(hook =>
-      hook(() => {}, () => {}, Hooks.ExecutionMode.Async, this.arguments));
-  }
-
   private executeWithResultset(hookIndex: number, executionMode: Hooks.ExecutionMode, withResultset: (success: boolean, resultset: Hooks.ExecutionResult) => void): void {
     this.hooks[hookIndex](successResult => {
       withResultset(true, {hook: this.hooks[hookIndex], result: successResult});

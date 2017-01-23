@@ -1,21 +1,36 @@
 import { interfaces as inversifyInterfaces } from "inversify";
 
+// TODO: Rename "extension points" to "component interfaces" in many implementations
+
 // Basic extension interface to implement
 export interface ExecutableExtension {
   execute(): any;
+}
+
+export interface Message {
+  componentInterface: symbol;
+  [key: string]: any;
+}
+
+export interface MessageHandler {
+  (message: Message): void;
+}
+
+export interface MessageBus {
+  on(componentInterface: symbol, handler: MessageHandler);
+  emit(message: Message);
 }
 
 /* Basic Interfaces for Hooks */
 // TODO: Put this into own package!
 export namespace Hooks {
   export interface PipeFactory {
-    (hooksExtensionPoint: symbol): Hooks.Pipe;
+    (componentInterface: symbol): Hooks.Pipe;
   }
 
   export enum ExecutionMode {
     Filter,
-    ResultSet,
-    Async
+    ResultSet
   }
 
   export interface ContinuationFunction {
@@ -62,12 +77,6 @@ export namespace Hooks {
      * Runs all hooks and calls onFinish afterwards.
      */
     runWithResultset(onFinish: PipeOnResultsetFinish): void;
-
-    /**
-     * runForcingAllAsync()
-     * Runs all hooks without waiting for single hooks to finish. Use with caution.
-     */
-    runForcingAllAsync(): void;
   }
 }
 
@@ -77,8 +86,8 @@ export namespace Hooks {
 // ComponentDescriptor.
 export interface Component {
   readonly name: string;
-  readonly extensionPoints: ExtensionPointDescriptor;
-  getExtensionPoint(name: string): symbol;
+  readonly interfaces: InterfaceDescriptor;
+  getInterface(name: string): symbol;
   configuration: {};
   addConfiguration(configuration: {}): void;
 }
@@ -88,7 +97,7 @@ export interface ComponentBinder {
   /**
    * Use this method if you want to bind a service locally.
    * @param serviceSymbol:symbol Use a (more or less) secret symbol which is not exposed to 
-   * the component registry (in contrast to extension points). Only your component should be 
+   * the component registry (in contrast to component interfaces). Only your component should be 
    * able to read it.
    */
   bindLocalService<T>(serviceIdentifier: symbol): inversifyInterfaces.BindingToSyntax<T>;
@@ -97,16 +106,16 @@ export interface ComponentBinder {
    * @param serviceName Your service will be available via componentName:serviceName
    */
   bindGlobalService<T>(serviceName: string): inversifyInterfaces.BindingToSyntax<T>;
-  bindExtension<T>(extensionPoint: symbol): inversifyInterfaces.BindingToSyntax<T>;
-  bindExecutable(extensionPoint: symbol, extensionClass: { new (...args: any[]): ExecutableExtension; }): inversifyInterfaces.BindingWhenOnSyntax<ExecutableExtension>;
+  bindExtension<T>(componentInterface: symbol): inversifyInterfaces.BindingToSyntax<T>;
+  bindExecutable(componentInterface: symbol, extensionClass: { new (...args: any[]): ExecutableExtension; }): inversifyInterfaces.BindingWhenOnSyntax<ExecutableExtension>;
 }
 
 // This is the method you get to describe your component on initialization
-// First, you define name and extension points, then, in a callback, you define your
+// First, you define name and interfaces, then, in a callback, you define your
 // own consumptions / bindings.
 export interface ComponentDescriptor {
   name: string;
-  extensionPoints?: ExtensionPointDescriptor;
+  interfaces?: InterfaceDescriptor;
   defaultConfiguration?: {};
   bindings: BindingDescriptor;
 }
@@ -142,6 +151,6 @@ export interface BindingDescriptor {
   (bindService: ComponentBinder, lookupService: LookupService): void;
 }
 
-export interface ExtensionPointDescriptor {
+export interface InterfaceDescriptor {
   [name: string]: symbol;
 }
