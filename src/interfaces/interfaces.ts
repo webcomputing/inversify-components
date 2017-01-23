@@ -135,11 +135,15 @@ export interface ComponentRegistry extends LookupService {
   getBinder(componentName: string, container: Container): ComponentBinder;
 }
 
+export interface MainApplication {
+  execute(container: Container): void;
+}
+
 // Main container class
 export interface Container {
   readonly componentRegistry: ComponentRegistry;
   readonly inversifyInstance: inversifyInterfaces.Container;
-  setMainApplication(extensionClass: { new (...args: any[]): ExecutableExtension; }): void;
+  setMainApplication(app: MainApplication): void;
   bind<T>(identifier: any): inversifyInterfaces.BindingToSyntax<T>;
   runMain(): void;
 }

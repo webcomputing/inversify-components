@@ -8,7 +8,7 @@ import { descriptor as coreComponentDescriptor } from "../core-component/descrip
 export class Container implements interfaces.Container {
   readonly inversifyInstance: inversifyInterfaces.Container;
   readonly componentRegistry: interfaces.ComponentRegistry;
-  private mainAppExtension = Symbol();
+  private mainApp: interfaces.MainApplication;
 
   constructor() {
     this.inversifyInstance = new InversifyContainer();
@@ -21,14 +21,14 @@ export class Container implements interfaces.Container {
     return this.inversifyInstance.bind<T>(identifier);
   }
 
-  public setMainApplication(extensionClass: { new (...args: any[]): interfaces.ExecutableExtension; }) {
-    debug("Setting main application to %o", extensionClass);
-    this.inversifyInstance.bind<interfaces.ExecutableExtension>(this.mainAppExtension).to(extensionClass);
+  public setMainApplication(app: interfaces.MainApplication) {
+    debug("Setting main application to %o", app);
+    this.mainApp = app;
   }
 
   public runMain() {
     debug("Executing main application...");
-    this.inversifyInstance.get<interfaces.ExecutableExtension>(this.mainAppExtension).execute();
+    this.mainApp.execute(this);
   }
 
   // TODO: Remove this, put into own package
