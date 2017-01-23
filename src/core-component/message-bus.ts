@@ -1,5 +1,7 @@
 import { MessageBus as MessageBusInterface, Message, MessageHandler } from "../interfaces/interfaces";
+import { injectable } from "inversify";
 
+@injectable()
 export class MessageBus implements MessageBusInterface {
   private registry: {identifier: symbol, handler: MessageHandler}[] = [];
 

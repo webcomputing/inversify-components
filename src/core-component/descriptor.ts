@@ -1,7 +1,8 @@
 import { ComponentDescriptor, Hooks, LookupService, MessageBus } from "../interfaces/interfaces";
 import { interfaces as inversifyInterfaces } from "inversify";
 import { HookPipe } from "./hook-pipe";
-import { MessageBus as MessageBusImpl } from "./message-bus";
+import { MessageBus as RootMessageBus } from "./message-bus";
+import { LocalMessageBus } from "./local-message-bus";
 
 export const descriptor: ComponentDescriptor = {
   name: "core",
@@ -10,7 +11,8 @@ export const descriptor: ComponentDescriptor = {
     bindService.bindGlobalService<LookupService>("lookup-service").toConstantValue(lookupService);
 
     // Make message bus available as singleton global service 
-    bindService.bindGlobalService<MessageBus>("message-bus").to(MessageBusImpl).inSingletonScope();
+    bindService.bindGlobalService<MessageBus>("message-bus").to(LocalMessageBus);
+    bindService.bindGlobalService<MessageBus>("root-message-bus").to(RootMessageBus).inSingletonScope();
 
     // Bind Hook Pipielines with factory
     bindService.bindGlobalService<Hooks.PipeFactory>("hook-pipe-factory").toFactory<Hooks.Pipe>(context => {
