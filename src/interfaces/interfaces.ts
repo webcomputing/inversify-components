@@ -130,8 +130,8 @@ export interface ComponentRegistry extends LookupService {
   readonly registeredComponents: { [name: string]: Component};
   add(component: Component): void;
   addFromDescriptor(descriptor: ComponentDescriptor): void;
-  executeBinding(componentName: string, container: BindableContainer): void;
-  autobind(container: BindableContainer, except?: string[]): void;
+  executeBinding(componentName: string, container: BindableContainer, scope?: string, ...args: any[]): void;
+  autobind(container: BindableContainer, except?: string[], scope?: string, ...args: any[]): void;
   getBinder(componentName: string, container: BindableContainer): ComponentBinder;
 }
 
