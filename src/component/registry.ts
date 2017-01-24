@@ -1,13 +1,13 @@
-import { ComponentRegistry as ComponentRegistryInterface, Component, Container, ComponentDescriptor, BindingDescriptor } from "../interfaces/interfaces";
+import { ComponentRegistry as ComponentRegistryInterface, Component, Container, ComponentDescriptor, BindingDescriptor, LookupService, BindableContainer } from "../interfaces/interfaces";
 import { ComponentBinder } from "./binder";
 import { Component as ComponentImpl } from "./component";
 import debug from "../debug-config";
 
-export class ComponentRegistry implements ComponentRegistryInterface {
+export class ComponentRegistry implements ComponentRegistryInterface, LookupService {
   readonly registeredComponents: { [name: string]: Component} = {};
   private registeredBindings: { [componentName: string]: BindingDescriptor} = {};
 
-  getBinder(name: string, container: Container) {
+  getBinder(name: string, container: BindableContainer) {
     return new ComponentBinder(this.lookup(name), container);
   }
 
@@ -41,17 +41,21 @@ export class ComponentRegistry implements ComponentRegistryInterface {
     this.registeredBindings[descriptor.name] = descriptor.bindings;
   }
 
-  executeBinding(componentName: string, container: Container) {
-    debug("Executing self-bind and registered bindings for " + componentName + "..");
-    container.bind<Component>("meta:component//" + componentName).toConstantValue(this.registeredComponents[componentName]);
-    this.registeredBindings[componentName](this.getBinder(componentName, container), this);
+  executeBinding(componentName: string, container: BindableContainer, scope = "root", ...args: any[]) {
+    if (typeof(this.registeredBindings[componentName]) === "undefined" || typeof(this.registeredBindings[componentName][scope]) === "undefined") return;
+    debug("Executing bindings for " + componentName + " in scope = " + scope + "..");
+
+    if (scope === "root") {
+      container.bind<Component>("meta:component//" + componentName).toConstantValue(this.registeredComponents[componentName]);
+    }
+    this.registeredBindings[componentName][scope](this.getBinder(componentName, container), this, ...args);
   }
 
-  autobind(container: Container, except = []) {
-    debug("Autobind started with exceptions = %j", except);
+  autobind(container: BindableContainer, except = [], scope = "root", ...args: any[]) {
+    debug("Autobind started with exceptions = %j in scope " + scope, except);
     Object.keys(this.registeredBindings)
       .filter(k => except.indexOf(k) === -1)
-      .forEach(componentName => this.executeBinding(componentName, container));
+      .forEach(componentName => this.executeBinding(componentName, container, scope, ...args));
     debug("Autobind finished");
   }
 }

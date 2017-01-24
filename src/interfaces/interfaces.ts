@@ -130,9 +130,9 @@ export interface ComponentRegistry extends LookupService {
   readonly registeredComponents: { [name: string]: Component};
   add(component: Component): void;
   addFromDescriptor(descriptor: ComponentDescriptor): void;
-  executeBinding(componentName: string, container: Container): void;
-  autobind(container: Container, except?: string[]): void;
-  getBinder(componentName: string, container: Container): ComponentBinder;
+  executeBinding(componentName: string, container: BindableContainer): void;
+  autobind(container: BindableContainer, except?: string[]): void;
+  getBinder(componentName: string, container: BindableContainer): ComponentBinder;
 }
 
 export interface MainApplication {
@@ -144,15 +144,24 @@ export interface Container {
   readonly componentRegistry: ComponentRegistry;
   readonly inversifyInstance: inversifyInterfaces.Container;
   setMainApplication(app: MainApplication): void;
-  bind<T>(identifier: any): inversifyInterfaces.BindingToSyntax<T>;
   runMain(): void;
+}
+
+export interface BindableContainer {
+  bind<T>(serviceIdentifier: inversifyInterfaces.ServiceIdentifier<T>): inversifyInterfaces.BindingToSyntax<T>;
 }
 
 // Helper interfaces for callbacks and so on..
 
 // Define how to bindings between symbol an
+
 export interface BindingDescriptor {
-  (bindService: ComponentBinder, lookupService: LookupService): void;
+  root: ScopedBindingDescriptor;
+  [name: string]: ScopedBindingDescriptor;
+}
+
+export interface ScopedBindingDescriptor {
+  (bindService: ComponentBinder, lookupService: LookupService, ...args: any[]): void;
 }
 
 export interface InterfaceDescriptor {

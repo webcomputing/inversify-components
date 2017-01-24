@@ -1,11 +1,11 @@
-import { Component, ComponentBinder as ComponentBinderInterface, Container, ExecutableExtension } from "../interfaces/interfaces";
+import { Component, ComponentBinder as ComponentBinderInterface, Container, ExecutableExtension, BindableContainer } from "../interfaces/interfaces";
 import { interfaces as inversifyInterfaces } from "inversify";
 
 export class ComponentBinder implements ComponentBinderInterface {
   private component: Component;
-  private container: Container;
+  private container: BindableContainer;
 
-  constructor(component: Component, container: Container) {
+  constructor(component: Component, container: BindableContainer) {
     this.component = component;
     this.container = container;
   }
