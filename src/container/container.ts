@@ -1,38 +1,38 @@
-import { Container as InversifyContainer, interfaces as inversifyInterfaces, inject } from "inversify";
+import { Container as InversifyContainer, interfaces as inversifyInterfaces } from "inversify";
+import { ComponentRegistry } from "../component/registry";
+import debug from "../debug-config";
 import * as interfaces from "../interfaces/interfaces";
 
-// TODO: Rename EXTENSION to COMPONENTS, SERVICE to SERVICECOMPONENTS.
-// What they NEED = INJECT()s, what they GIVE = Extensions and Services
+import { descriptor as coreComponentDescriptor } from "../core-component/descriptor";
 
 export class Container implements interfaces.Container {
-  private inversifyContainer: inversifyInterfaces.Container;
-  private mainAppExtension = Symbol();
+  readonly inversifyInstance: inversifyInterfaces.Container;
+  readonly componentRegistry: interfaces.ComponentRegistry;
+  private mainApp: interfaces.MainApplication;
 
   constructor() {
-    this.inversifyContainer = new InversifyContainer();
+    this.inversifyInstance = new InversifyContainer();
+    this.componentRegistry = new ComponentRegistry();
+    this.bindFrameworkComponent();
   }
 
-  public getInversifyInstance() {
-    return this.inversifyContainer;
+  public bind<T>(identifier: any) {
+    debug("Container tells inversify to bind to %o", identifier);
+    return this.inversifyInstance.bind<T>(identifier);
   }
 
-  public bindExtension(extensionPoint: symbol, extensionClass: { new (...args: any[]): interfaces.Extension; }) {
-    return this.getInversifyInstance().bind<interfaces.Extension>(extensionPoint).to(extensionClass);
-  }
-
-  public bindService<T>(identifier: symbol) {
-    return this.getInversifyInstance().bind<T>(identifier);
-  }
-
-  public getExtension(extensionPoint: symbol) {
-    return this.getInversifyInstance().get<interfaces.Extension>(extensionPoint);
-  }
-
-  public setMainApplication(extensionClass: { new (...args: any[]): interfaces.Extension; }) {
-    this.bindExtension(this.mainAppExtension, extensionClass);
+  public setMainApplication(app: interfaces.MainApplication) {
+    debug("Setting main application to %o", app);
+    this.mainApp = app;
   }
 
   public runMain() {
-    this.getExtension(this.mainAppExtension).execute();
+    debug("Executing main application...");
+    this.mainApp.execute(this);
+  }
+
+  // TODO: Remove this, put into own package
+  private bindFrameworkComponent() {
+    this.componentRegistry.addFromDescriptor(coreComponentDescriptor);
   }
 }
