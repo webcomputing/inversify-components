@@ -18,7 +18,7 @@ export class HookPipe implements Hooks.Pipe {
   }
 
   withArguments(...args: any[]) {
-    return new HookPipe(this.hooks, this.arguments);
+    return new HookPipe(this.hooks, args);
   }
 
   runAsFilter(onFinish: Hooks.PipeOnFilterFinish, onFailure?: Hooks.PipeOnResultsetFinish) {
@@ -46,7 +46,8 @@ export class HookPipe implements Hooks.Pipe {
   }
 
   private executeAll(stopOnFailure: boolean, executionMode: Hooks.ExecutionMode, onFinish: (successful: Hooks.ExecutionResult[], failed: Hooks.ExecutionResult[]) => void) {
-    let successful, failed: Hooks.ExecutionResult[] = [];
+    let successful: Hooks.ExecutionResult[] = [];
+    let failed: Hooks.ExecutionResult[] = [];
 
     let repeater = (i: number) => {
       if (typeof(this.hooks[i]) === "undefined") return onFinish(successful, failed);
