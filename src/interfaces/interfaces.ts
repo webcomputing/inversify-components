@@ -47,11 +47,11 @@ export namespace Hooks {
   }
 
   export interface PipeOnFilterFinish {
-    (hooks: ExecutionResult[], passedArguments: any[]): void;
+    (hooks: ExecutionResult[], ...passedArguments: any[]): void;
   }
 
   export interface PipeOnResultsetFinish {
-    (successfulHooks: ExecutionResult[], unsuccessfulHooks: ExecutionResult[], passedArguments: any[]): void;
+    (successfulHooks: ExecutionResult[], unsuccessfulHooks: ExecutionResult[], ...passedArguments: any[]): void;
   }
 
   export interface Pipe {

@@ -25,16 +25,16 @@ export class HookPipe implements Hooks.Pipe {
     let resultSet: Hooks.ExecutionResult[] = [];
     this.executeAll(true, Hooks.ExecutionMode.Filter, (successful, failed) => {
       if (failed.length > 0 && typeof(onFailure) !== "undefined") {
-        onFailure(successful, failed, this.arguments);
+        onFailure(successful, failed, ...this.arguments);
       } else if (failed.length === 0) {
-        onFinish(successful, this.arguments);
+        onFinish(successful, ...this.arguments);
       }
     });
   }
 
   runWithResultset(onFinish: Hooks.PipeOnResultsetFinish) {
     this.executeAll(false, Hooks.ExecutionMode.ResultSet,
-      (successful, failed) => onFinish(successful, failed, this.arguments));
+      (successful, failed) => onFinish(successful, failed, ...this.arguments));
   }
 
   private executeWithResultset(hookIndex: number, executionMode: Hooks.ExecutionMode, withResultset: (success: boolean, resultset: Hooks.ExecutionResult) => void): void {
@@ -42,7 +42,7 @@ export class HookPipe implements Hooks.Pipe {
       withResultset(true, {hook: this.hooks[hookIndex], result: successResult});
     }, failResult => {
       withResultset(false, {hook: this.hooks[hookIndex], result: failResult});
-    }, executionMode, this.arguments);
+    }, executionMode, ...this.arguments);
   }
 
   private executeAll(stopOnFailure: boolean, executionMode: Hooks.ExecutionMode, onFinish: (successful: Hooks.ExecutionResult[], failed: Hooks.ExecutionResult[]) => void) {
