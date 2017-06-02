@@ -10,6 +10,10 @@ export class ComponentBinder implements ComponentBinderInterface {
     this.container = container;
   }
 
+  bindLocalServiceToSelf<T>(service: { new (...args: any[]): T; }) {
+    return this.container.bind(service).toSelf();
+  }
+
   bindLocalService<T>(serviceSymbol: symbol) {
     return this.container.bind<T>(serviceSymbol);
   }

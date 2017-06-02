@@ -101,6 +101,12 @@ export interface ComponentBinder {
    * able to read it.
    */
   bindLocalService<T>(serviceIdentifier: symbol): inversifyInterfaces.BindingToSyntax<T>;
+
+  /**
+   * Same as bindLocalService(), but you don't need a symbol, use the class itself as identifier and bind directly to it
+   */
+  bindLocalServiceToSelf<T>(service: { new (...args: any[]): any; }): inversifyInterfaces.BindingInWhenOnSyntax<T>;
+
   /**
    * Use this to expose a service to the whole environment.
    * @param serviceName Your service will be available via componentName:serviceName
