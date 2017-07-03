@@ -1,6 +1,6 @@
 {
   "name": "ioc-container",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Plugin based mini core framework, combining InversifyJS with Extension Point pattern",
   "main": "lib/ioc-container.js",
   "typings": "./dts/ioc-container.d.ts",
@@ -8,7 +8,7 @@
     "test": "tests"
   },
   "dependencies": {
-    "inversify": "^3.0.0-rc.4",
+    "inversify": "4.1.1",
     "debug": "2.6"
   },
   "devDependencies": {
@@ -23,5 +23,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Antonius Ostermann",
-  "license": "ISC"
+  "license": "ISC",
+  "publishConfig": {
+    "registry": "http://sinopia.verstehe.local:4873"
+  }
 }
