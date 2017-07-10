@@ -5,8 +5,5 @@
     "sourceMap": true,
     "outDir": "js",
     "experimentalDecorators": true
-  },
-  "exclude": [
-    "node_modules"
-  ]
+  }
 }
