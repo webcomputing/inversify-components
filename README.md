@@ -5,7 +5,7 @@ accesses the dependency injection container directly. This enables you to:
 - Develop loosely coupled and independent components, without exploiting your whole dependency injection container
 - Enable / disable / mock whole components in your application
 - Use scoped child containers, for example bind dependencies only to a http request
-- Implement the extension point pattern to "plu-in" extensions of components from other components
+- Implement the extension point pattern to "plug-in" extensions of components from other components
 
 ## Installation
 Install inversify-components and set it as an dependency in your local package.json:
@@ -153,4 +153,34 @@ export const descriptor: ComponentDescriptor = {
   }
 };
 ```
+
+### Configuration
+
+#### Set default configuration
+You can set a default configuration for your component by adding it to your descriptor:
+```typescript
+const configuration = {
+  "configurationKey": "configurationValue";
+};
+
+export const descriptor: ComponentDescriptor = {
+  name: "my-component-name",
+  defaultConfiguration: configuration
+}
+```
+
+#### Inject configuration values
+In all of your classes, you can inject your component meta data, which includes the components configuration:
+```typescript
+import { inject, injectable } from "inversify";
+import { Configuratio } from "inversify-components";
+
+@injectable()
+class MyClass {
+  constrcutor(@inject("meta:component//my-component-name") component: Component)
+    this.configuration = this.component.configuration;
+  }
+}
+```
+
 [1]: http://blog.ploeh.dk/2011/07/28/CompositionRoot/
