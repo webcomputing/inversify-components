@@ -16,11 +16,6 @@ export class Container implements interfaces.Container {
     this.bindFrameworkComponent();
   }
 
-  public bind<T>(identifier: any) {
-    debug("Container tells inversify to bind to %o", identifier);
-    return this.inversifyInstance.bind<T>(identifier);
-  }
-
   public setMainApplication(app: interfaces.MainApplication) {
     debug("Setting main application to %o", app);
     this.mainApp = app;

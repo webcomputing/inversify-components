@@ -1,7 +1,6 @@
 js
-node_modules
 src
-tests
-gulpfile.js
 tsconfig.json
+gulpfile.js
 .gitignore
+.vscode

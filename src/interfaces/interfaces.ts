@@ -47,11 +47,11 @@ export namespace Hooks {
   }
 
   export interface PipeOnFilterFinish {
-    (hooks: ExecutionResult[], passedArguments: any[]): void;
+    (hooks: ExecutionResult[], ...passedArguments: any[]): void;
   }
 
   export interface PipeOnResultsetFinish {
-    (successfulHooks: ExecutionResult[], unsuccessfulHooks: ExecutionResult[], passedArguments: any[]): void;
+    (successfulHooks: ExecutionResult[], unsuccessfulHooks: ExecutionResult[], ...passedArguments: any[]): void;
   }
 
   export interface Pipe {
@@ -101,6 +101,12 @@ export interface ComponentBinder {
    * able to read it.
    */
   bindLocalService<T>(serviceIdentifier: symbol): inversifyInterfaces.BindingToSyntax<T>;
+
+  /**
+   * Same as bindLocalService(), but you don't need a symbol, use the class itself as identifier and bind directly to it
+   */
+  bindLocalServiceToSelf<T>(service: { new (...args: any[]): any; }): inversifyInterfaces.BindingInWhenOnSyntax<T>;
+
   /**
    * Use this to expose a service to the whole environment.
    * @param serviceName Your service will be available via componentName:serviceName
@@ -130,9 +136,9 @@ export interface ComponentRegistry extends LookupService {
   readonly registeredComponents: { [name: string]: Component};
   add(component: Component): void;
   addFromDescriptor(descriptor: ComponentDescriptor): void;
-  executeBinding(componentName: string, container: Container): void;
-  autobind(container: Container, except?: string[]): void;
-  getBinder(componentName: string, container: Container): ComponentBinder;
+  executeBinding(componentName: string, container: BindableContainer, scope?: string, ...args: any[]): void;
+  autobind(container: BindableContainer, except?: string[], scope?: string, ...args: any[]): void;
+  getBinder(componentName: string, container: BindableContainer): ComponentBinder;
 }
 
 export interface MainApplication {
@@ -144,15 +150,24 @@ export interface Container {
   readonly componentRegistry: ComponentRegistry;
   readonly inversifyInstance: inversifyInterfaces.Container;
   setMainApplication(app: MainApplication): void;
-  bind<T>(identifier: any): inversifyInterfaces.BindingToSyntax<T>;
   runMain(): void;
+}
+
+export interface BindableContainer {
+  bind<T>(serviceIdentifier: inversifyInterfaces.ServiceIdentifier<T>): inversifyInterfaces.BindingToSyntax<T>;
 }
 
 // Helper interfaces for callbacks and so on..
 
 // Define how to bindings between symbol an
+
 export interface BindingDescriptor {
-  (bindService: ComponentBinder, lookupService: LookupService): void;
+  root: ScopedBindingDescriptor;
+  [name: string]: ScopedBindingDescriptor;
+}
+
+export interface ScopedBindingDescriptor {
+  (bindService: ComponentBinder, lookupService: LookupService, ...args: any[]): void;
 }
 
 export interface InterfaceDescriptor {
