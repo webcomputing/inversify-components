@@ -5,7 +5,7 @@ accesses the dependency injection container directly. This enables you to:
 - Develop loosely coupled and independent components, without exploiting your whole dependency injection container
 - Enable / disable / mock whole components in your application
 - Use scoped child containers, for example bind dependencies only to a http request
-- Implement the extension point pattern to "plu-in" extensions of components from other components
+- Implement the extension point pattern to "plug-in" extensions of components from other components
 
 ## Installation
 Install inversify-components and set it as an dependency in your local package.json:
