@@ -2,8 +2,18 @@
   "name": "inversify-components",
   "version": "0.1.0",
   "description": "Plugin based mini core framework. Combines InversifyJS with Extension Point Pattern / Service Provider Interfaces. Enables building components with inversify using binding descriptors.",
+  "keywords": [
+    "InversifyJS",
+    "scoped dependecy injection",
+    "dependecy injection"
+  ],
   "main": "lib/inversify-components.js",
   "typings": "./dts/inversify-components.d.ts",
+  "bugs": "https://github.com/webcomputing/inversify-components/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/webcomputing/inversify-components"
+  },
   "directories": {
     "test": "tests"
   },
@@ -22,8 +32,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Antonius Ostermann",
-  "license": "ISC",
+  "author": "Antonius Ostermann <ostermann.antonius@gmail.com> (http://www.antonius-ostermann.de)",
+  "license": "MIT",
   "publishConfig": {
     "registry": "http://sinopia.verstehe.local:4873"
   }
