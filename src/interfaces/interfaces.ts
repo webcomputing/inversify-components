@@ -94,6 +94,8 @@ export interface Component {
 
 // General interface to bind sth via dependency injection
 export interface ComponentBinder {
+
+
   /**
    * Use this method if you want to bind a service locally.
    * @param serviceSymbol:symbol Use a (more or less) secret symbol which is not exposed to 
@@ -167,7 +169,7 @@ export interface BindingDescriptor {
 }
 
 export interface ScopedBindingDescriptor {
-  (bindService: ComponentBinder, lookupService: LookupService, ...args: any[]): void;
+  (bindService: ComponentBinder, lookupService: LookupService, inversifyInstance: inversifyInterfaces.Container, ...args: any[]): void;
 }
 
 export interface InterfaceDescriptor {

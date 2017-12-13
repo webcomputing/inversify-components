@@ -79,6 +79,25 @@ export const descriptor: ComponentDescriptor = {
 Notice that each binding gets the unique component name as a prefix. This guarantees that there are not duplicate service bindings
 across all registered components.
 
+#### Grab inversify container
+You are also able to grab the inversify coontainer in a `ComponentDescriptor`:
+```typescript
+import { ComponentDescriptor } from "inversify-components";
+
+export const descriptor: ComponentDescriptor = {
+  name: "name-of-component", // This must be unique for all registered components
+  bindings: {
+    root: (bindService, lookupService, inversifyContainer) => {
+      // Unbind something..
+      inversifyContainer.unbind("service");
+
+      bindService.bindGlobalService<TypeOfService>("service-name").to(MyServiceClass);
+    }
+  }
+};
+```
+So if needed, you are always in full control inside your dependency descriptors.
+
 #### Changing the scope of a binding
 The above component descriptor executes bindings for the `root` scope. This is the default scope for inversify-components, which
 is executed automatically at `autobind`. But you could also register bindings for a specific scope, and execute this scope 

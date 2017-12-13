@@ -1,3 +1,4 @@
+import { interfaces as inversifyInterfaces } from "inversify";
 import { ComponentRegistry as ComponentRegistryInterface, Component, Container, ComponentDescriptor, BindingDescriptor, LookupService, BindableContainer } from "../interfaces/interfaces";
 import { ComponentBinder } from "./binder";
 import { Component as ComponentImpl } from "./component";
@@ -41,17 +42,17 @@ export class ComponentRegistry implements ComponentRegistryInterface, LookupServ
     this.registeredBindings[descriptor.name] = descriptor.bindings;
   }
 
-  executeBinding(componentName: string, container: BindableContainer, scope = "root", ...args: any[]) {
+  executeBinding(componentName: string, container: inversifyInterfaces.Container, scope = "root", ...args: any[]) {
     if (typeof(this.registeredBindings[componentName]) === "undefined" || typeof(this.registeredBindings[componentName][scope]) === "undefined") return;
     debug("Executing bindings for " + componentName + " in scope = " + scope + "..");
 
     if (scope === "root") {
       container.bind<Component>("meta:component//" + componentName).toConstantValue(this.registeredComponents[componentName]);
     }
-    this.registeredBindings[componentName][scope](this.getBinder(componentName, container), this, ...args);
+    this.registeredBindings[componentName][scope](this.getBinder(componentName, container), this, container, ...args);
   }
 
-  autobind(container: BindableContainer, except = [], scope = "root", ...args: any[]) {
+  autobind(container: inversifyInterfaces.Container, except = [], scope = "root", ...args: any[]) {
     debug("Autobind started with exceptions = %j in scope " + scope, except);
     Object.keys(this.registeredBindings)
       .filter(k => except.indexOf(k) === -1)
