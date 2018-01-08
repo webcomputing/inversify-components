@@ -37,8 +37,21 @@ export namespace Hooks {
     (result?: any): void;
   }
 
+  /** 
+   * Function which intercepts into a given workflow. Based on execution mode and return of the hook, the workflow might be interrupted.
+   * @param {ExecutionMode} mode execution mode of this hook. If set to filter, your hook function is able to intercept the workflow
+   * @param args all additional arguments passed to the hook function
+   * @return {Promise<HookResult | boolean> | HookResult | boolean} true / false if the workflow should be interrupted, or HookResult for more complex responses
+   */
   export interface Hook {
-    (success: ContinuationFunction, failure: ContinuationFunction, mode: ExecutionMode, ...args: any[]): void;
+    (mode: ExecutionMode, ...args: any[]): Promise<HookResult | boolean> | HookResult | boolean;
+  }
+
+  /** Possible result set of your hook function */
+  export interface HookResult {
+    /** Set to false to intercept the workflo */
+    success: boolean;
+    result?: any;
   }
 
   export interface ExecutionResult {
@@ -46,12 +59,18 @@ export namespace Hooks {
     result: any;
   }
 
-  export interface PipeOnFilterFinish {
-    (hooks: ExecutionResult[], ...passedArguments: any[]): void;
-  }
+  export interface ExecutionSummary {
+    /** If all hooks were successfully executed */
+    success: boolean;
 
-  export interface PipeOnResultsetFinish {
-    (successfulHooks: ExecutionResult[], unsuccessfulHooks: ExecutionResult[], ...passedArguments: any[]): void;
+    /** List of successfully executed hooks */
+    successfulHooks: ExecutionResult[];
+
+    /** List of failed hooks */
+    failedHooks: ExecutionResult[];
+
+    /** Arguments passed to hook functions */
+    arguments: any[];
   }
 
   export interface Pipe {
@@ -61,22 +80,21 @@ export namespace Hooks {
     /** 
      * withArguments()
      * Returns a new HookPipe based on this one, but with given arguments
-     * Implements immutable pattern (see Java String) 
+     * Implements immutable pattern
      */
     withArguments(...args: any[]): Pipe;
 
     /** 
      * runAsFilter()
-     * Runs all hooks in this pipe as filter, which means onFinish is only called if all hooks called "success(result: any)".
-     * As soon as one hook answers with failure(), no other hooks are executed anymore, in that case, onFailure() is called, if given.
+     * Runs all hooks in this pipe as filter. If one hook fails, all following hooks are not executed anymore.
      */
-    runAsFilter(onFinish: PipeOnFilterFinish, onFailure?: PipeOnResultsetFinish): void;
+    runAsFilter(): Promise<Hooks.ExecutionSummary>;
 
     /** 
      * runWithResultset()
-     * Runs all hooks and calls onFinish afterwards.
+     * Runs all hooks (regardless of each's return value) and calls onFinish afterwards.
      */
-    runWithResultset(onFinish: PipeOnResultsetFinish): void;
+    runWithResultset(): Promise<Hooks.ExecutionSummary>;
   }
 }
 
@@ -94,7 +112,6 @@ export interface Component {
 
 // General interface to bind sth via dependency injection
 export interface ComponentBinder {
-
 
   /**
    * Use this method if you want to bind a service locally.
