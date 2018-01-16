@@ -25,12 +25,12 @@ export class HookPipe implements Hooks.Pipe {
     const resultSet: Hooks.ExecutionResult[] = [];
 
     const resultList = await this.executeAll(true, Hooks.ExecutionMode.Filter);
-    return { "success": resultList.failed.length > 0, "successfulHooks": resultList.successful, "failedHooks": resultList.failed, arguments: this.arguments };
+    return { "success": resultList.failed.length === 0, "successfulHooks": resultList.successful, "failedHooks": resultList.failed, arguments: this.arguments };
   }
 
   async runWithResultset(): Promise<Hooks.ExecutionSummary> {
     const resultList = await this.executeAll(false, Hooks.ExecutionMode.ResultSet);
-    return { "success": resultList.failed.length > 0, "successfulHooks": resultList.successful, "failedHooks": resultList.failed, arguments: this.arguments };
+    return { "success": resultList.failed.length === 0, "successfulHooks": resultList.successful, "failedHooks": resultList.failed, arguments: this.arguments };
   }
 
   private async executeWithResultset(hookIndex: number, executionMode: Hooks.ExecutionMode): Promise<Hooks.HookResult> {
@@ -46,7 +46,7 @@ export class HookPipe implements Hooks.Pipe {
       if (typeof(this.hooks[i]) === "undefined") return;
 
       const hookResult = await this.executeWithResultset(i, executionMode);
-      hookResult.success ? successful.push(hookResult.result) : failed.push(hookResult.result);
+      hookResult.success ? successful.push({ hook: this.hooks[i], result: hookResult.result }) : failed.push({ hook: this.hooks[i], result: hookResult.result });
 
       if (!hookResult.success && stopOnFailure) {
         return;

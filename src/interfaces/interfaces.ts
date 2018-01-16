@@ -92,7 +92,7 @@ export namespace Hooks {
 
     /** 
      * runWithResultset()
-     * Runs all hooks (regardless of each's return value) and calls onFinish afterwards.
+     * Runs all hooks regardless of each's return value.
      */
     runWithResultset(): Promise<Hooks.ExecutionSummary>;
   }
