@@ -174,15 +174,16 @@ export const descriptor: ComponentDescriptor = {
 ```
 
 ### Configuration
+The basic style of configuring components is described in [this gist][2]. This style enables you to define default and required configurations without hassle.
 
 #### Set default configuration
 You can set a default configuration for your component by adding it to your descriptor:
 ```typescript
-const configuration = {
+const configuration: Configuration.Default = {
   "configurationKey": "configurationValue";
 };
 
-export const descriptor: ComponentDescriptor = {
+export const descriptor: ComponentDescriptor<Configuration.Default> = {
   name: "my-component-name",
   defaultConfiguration: configuration
 }
@@ -192,14 +193,15 @@ export const descriptor: ComponentDescriptor = {
 In all of your classes, you can inject your component meta data, which includes the components configuration:
 ```typescript
 import { inject, injectable } from "inversify";
-import { Configuratio } from "inversify-components";
+import { Component } from "inversify-components";
 
 @injectable()
 class MyClass {
-  constrcutor(@inject("meta:component//my-component-name") component: Component)
+  constrcutor(@inject("meta:component//my-component-name") component: Component<Configuration.Runtime>)
     this.configuration = this.component.configuration;
   }
 }
 ```
 
 [1]: http://blog.ploeh.dk/2011/07/28/CompositionRoot/
+[2]: https://gist.github.com/antoniusostermann/a6cc1bb2056404682a827735b17df32a

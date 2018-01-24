@@ -102,13 +102,13 @@ export namespace Hooks {
 // Every component must have a name, so we need it in the constructor.
 // After setting, the name is not changable anymore. You set the name via the
 // ComponentDescriptor.
-export interface Component {
+export interface Component< Configuration = {} > {
   readonly name: string;
   readonly interfaces: InterfaceDescriptor;
   getInterface(name: string): symbol;
-  configuration: {};
-  addConfiguration(configuration: {}): void;
-}
+  configuration: Configuration;
+  addConfiguration(configuration: Partial<Configuration>): void;
+};
 
 // General interface to bind sth via dependency injection
 export interface ComponentBinder {
@@ -138,16 +138,16 @@ export interface ComponentBinder {
 // This is the method you get to describe your component on initialization
 // First, you define name and interfaces, then, in a callback, you define your
 // own consumptions / bindings.
-export interface ComponentDescriptor {
+export interface ComponentDescriptor<OptionalConfiguration={}> {
   name: string;
   interfaces?: InterfaceDescriptor;
-  defaultConfiguration?: {};
+  defaultConfiguration?: OptionalConfiguration;
   bindings: BindingDescriptor;
 }
 
 // To lookup a component (to get its meta data like extension points)
 export interface LookupService {
-  lookup(componentName: string): Component;
+  lookup<Configuration={}>(componentName: string): Component<Configuration>;
   isRegistered(componentName: string): boolean;
 }
 
