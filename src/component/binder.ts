@@ -2,13 +2,7 @@ import { Component, ComponentBinder as ComponentBinderInterface, Container, Exec
 import { interfaces as inversifyInterfaces } from "inversify";
 
 export class ComponentBinder implements ComponentBinderInterface {
-  private component: Component;
-  private container: BindableContainer;
-
-  constructor(component: Component, container: BindableContainer) {
-    this.component = component;
-    this.container = container;
-  }
+  constructor(private componentName: string, private container: BindableContainer) {}
 
   bindLocalServiceToSelf<T>(service: { new (...args: any[]): T; }) {
     return this.container.bind(service).toSelf();
@@ -19,7 +13,7 @@ export class ComponentBinder implements ComponentBinderInterface {
   }
 
   bindGlobalService<T>(serviceName: string) {
-    return this.container.bind<T>(this.component.name + ":" + serviceName);
+    return this.container.bind<T>(this.componentName + ":" + serviceName);
   }
 
   bindExtension<T>(extensionPoint: symbol) {

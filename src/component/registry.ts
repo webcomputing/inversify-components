@@ -9,15 +9,15 @@ export class ComponentRegistry implements ComponentRegistryInterface, LookupServ
   private registeredBindings: { [componentName: string]: BindingDescriptor} = {};
 
   getBinder(name: string, container: BindableContainer) {
-    return new ComponentBinder(this.lookup(name), container);
+    return new ComponentBinder(this.lookup(name).name, container);
   }
 
-  lookup(componentName: string): Component {
+  lookup<Config={}>(componentName: string): Component<Config> {
     if (!this.isRegistered(componentName)) {
       throw new Error("Looked up component " + componentName + "was not found!");
     }
 
-    return this.registeredComponents[componentName];
+    return this.registeredComponents[componentName] as Component<Config>;
   }
 
   isRegistered(componentName: string): boolean {

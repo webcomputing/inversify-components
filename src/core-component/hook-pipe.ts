@@ -21,53 +21,44 @@ export class HookPipe implements Hooks.Pipe {
     return new HookPipe(this.hooks, args);
   }
 
-  runAsFilter(onFinish: Hooks.PipeOnFilterFinish, onFailure?: Hooks.PipeOnResultsetFinish) {
-    let resultSet: Hooks.ExecutionResult[] = [];
-    this.executeAll(true, Hooks.ExecutionMode.Filter, (successful, failed) => {
-      if (failed.length > 0 && typeof(onFailure) !== "undefined") {
-        onFailure(successful, failed, ...this.arguments);
-      } else if (failed.length === 0) {
-        onFinish(successful, ...this.arguments);
-      }
-    });
+  async runAsFilter(): Promise<Hooks.ExecutionSummary> {
+    const resultSet: Hooks.ExecutionResult[] = [];
+
+    const resultList = await this.executeAll(true, Hooks.ExecutionMode.Filter);
+    return { "success": resultList.failed.length === 0, "successfulHooks": resultList.successful, "failedHooks": resultList.failed, arguments: this.arguments };
   }
 
-  runWithResultset(onFinish: Hooks.PipeOnResultsetFinish) {
-    this.executeAll(false, Hooks.ExecutionMode.ResultSet,
-      (successful, failed) => onFinish(successful, failed, ...this.arguments));
+  async runWithResultset(): Promise<Hooks.ExecutionSummary> {
+    const resultList = await this.executeAll(false, Hooks.ExecutionMode.ResultSet);
+    return { "success": resultList.failed.length === 0, "successfulHooks": resultList.successful, "failedHooks": resultList.failed, arguments: this.arguments };
   }
 
-  private executeWithResultset(hookIndex: number, executionMode: Hooks.ExecutionMode, withResultset: (success: boolean, resultset: Hooks.ExecutionResult) => void): void {
-    this.hooks[hookIndex](successResult => {
-      withResultset(true, {hook: this.hooks[hookIndex], result: successResult});
-    }, failResult => {
-      withResultset(false, {hook: this.hooks[hookIndex], result: failResult});
-    }, executionMode, ...this.arguments);
+  private async executeWithResultset(hookIndex: number, executionMode: Hooks.ExecutionMode): Promise<Hooks.HookResult> {
+    const hookResult = await Promise.resolve(this.hooks[hookIndex](executionMode, ...this.arguments));
+    return typeof hookResult === "boolean" ? { success: hookResult } : hookResult;
   }
 
-  private executeAll(stopOnFailure: boolean, executionMode: Hooks.ExecutionMode, onFinish: (successful: Hooks.ExecutionResult[], failed: Hooks.ExecutionResult[]) => void) {
+  private async executeAll(stopOnFailure: boolean, executionMode: Hooks.ExecutionMode): Promise<{ successful: Hooks.ExecutionResult[], failed: Hooks.ExecutionResult[] }> {
     let successful: Hooks.ExecutionResult[] = [];
     let failed: Hooks.ExecutionResult[] = [];
 
-    let repeater = (i: number) => {
-      if (typeof(this.hooks[i]) === "undefined") return onFinish(successful, failed);
+    let repeater = async (i: number) => {
+      if (typeof(this.hooks[i]) === "undefined") return;
 
-      this.executeWithResultset(i, executionMode, (wasSuccessful, result) => {
-        if (wasSuccessful) {
-          successful.push(result);
-        } else {
-          failed.push(result);
-        }
+      const hookResult = await this.executeWithResultset(i, executionMode);
+      hookResult.success ? successful.push({ hook: this.hooks[i], result: hookResult.result }) : failed.push({ hook: this.hooks[i], result: hookResult.result });
 
-        if (!wasSuccessful && stopOnFailure) {
-          return onFinish(successful, failed);
-        } else {
-          repeater(i + 1);
-        }
-      });
+      if (!hookResult.success && stopOnFailure) {
+        return;
+      } else {
+        await repeater(i + 1);
+      }
     };
 
-    // Start the loop with first hook
-    repeater(0);
+    // Start the loop with first hook -> and continue with all other
+    await repeater(0);
+
+    // Return resultset
+    return { successful: successful, failed: failed };
   }
 }
