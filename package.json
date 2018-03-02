@@ -1,6 +1,6 @@
 {
   "name": "inversify-components",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Plugin based mini core framework. Combines InversifyJS with Extension Point Pattern / Service Provider Interfaces. Enables building components with inversify using binding descriptors.",
   "keywords": [
     "InversifyJS",
@@ -14,11 +14,11 @@
     "type": "git",
     "url": "https://github.com/webcomputing/inversify-components"
   },
-  "directories": {
-    "test": "tests"
+  "peerDependencies": {
+    "inversify": "4.1.1",
+    "reflect-metadata": "^0.1.12"
   },
   "dependencies": {
-    "inversify": "4.1.1",
     "debug": "^3.1.0"
   },
   "devDependencies": {
@@ -27,7 +27,9 @@
     "gulp-tslint": "^8.1.2",
     "gulp-typescript": "^3.2.4",
     "typescript": "^2.6.2",
-    "tslint": "^5.9.1"
+    "tslint": "^5.9.1",
+    "inversify": "4.1.1",
+    "reflect-metadata": "^0.1.12"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

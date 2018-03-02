@@ -58,8 +58,7 @@ container.runMain();
 ```
 
 ### Components and component descriptors
-inversify-components allows you to basically split your applications into independent components. Each component does not have
-direct access to the dependency injection container, but still is enabled to bind it's services. To do so, each component exports
+inversify-components allows you to basically split your applications into independent components. To achieve this, each component exports
 a `component descriptor`:
 ```typescript
 import { ComponentDescriptor } from "inversify-components";
