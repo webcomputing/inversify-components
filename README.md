@@ -58,7 +58,7 @@ container.runMain();
 ```
 
 ### Components and component descriptors
-inversify-components allows you to basically split your applications into independent components. To do so, each component exports
+inversify-components allows you to basically split your applications into independent components. To achieve this, each component exports
 a `component descriptor`:
 ```typescript
 import { ComponentDescriptor } from "inversify-components";
