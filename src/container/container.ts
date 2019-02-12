@@ -23,7 +23,7 @@ export class Container implements interfaces.Container {
 
   public runMain() {
     debug("Executing main application...");
-    this.mainApp.execute(this);
+    return this.mainApp.execute(this);
   }
 
   // TODO: Remove this, put into own package
