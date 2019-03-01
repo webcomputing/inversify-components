@@ -1,4 +1,4 @@
-import * as _cloneDeep from "lodash/cloneDeep";
+import _cloneDeep from "lodash/cloneDeep";
 
 import { interfaces as inversifyInterfaces } from "inversify";
 import { ComponentRegistry as ComponentRegistryInterface, Component, Container, ComponentDescriptor, BindingDescriptor, LookupService, BindableContainer } from "../interfaces/interfaces";
