@@ -1,20 +1,28 @@
-import * as _ from "lodash";
+import { cloneDeep } from "lodash";
 
 import { interfaces as inversifyInterfaces } from "inversify";
-import { ComponentRegistry as ComponentRegistryInterface, Component, Container, ComponentDescriptor, BindingDescriptor, LookupService, BindableContainer } from "../interfaces/interfaces";
+import {
+  ComponentRegistry as ComponentRegistryInterface,
+  Component,
+  Container,
+  ComponentDescriptor,
+  BindingDescriptor,
+  LookupService,
+  BindableContainer,
+} from "../interfaces/interfaces";
 import { ComponentBinder } from "./binder";
 import { Component as ComponentImpl } from "./component";
 import debug from "../debug-config";
 
 export class ComponentRegistry implements ComponentRegistryInterface, LookupService {
-  readonly registeredComponents: { [name: string]: Component} = {};
-  private registeredBindings: { [componentName: string]: BindingDescriptor} = {};
+  readonly registeredComponents: { [name: string]: Component } = {};
+  private registeredBindings: { [componentName: string]: BindingDescriptor } = {};
 
   getBinder(name: string, container: BindableContainer) {
     return new ComponentBinder(this.lookup(name).name, container);
   }
 
-  lookup<Config={}>(componentName: string): Component<Config> {
+  lookup<Config = {}>(componentName: string): Component<Config> {
     if (!this.isRegistered(componentName)) {
       throw new Error("Looked up component " + componentName + "was not found!");
     }
@@ -37,7 +45,7 @@ export class ComponentRegistry implements ComponentRegistryInterface, LookupServ
 
   addFromDescriptor(descriptor: ComponentDescriptor) {
     let interfaces = descriptor.hasOwnProperty("interfaces") ? descriptor.interfaces : {};
-    let defaultConfig = descriptor.hasOwnProperty("defaultConfiguration") ? _.cloneDeep(descriptor.defaultConfiguration) : {};
+    let defaultConfig = descriptor.hasOwnProperty("defaultConfiguration") ? cloneDeep(descriptor.defaultConfiguration) : {};
     this.add(new ComponentImpl(descriptor.name, interfaces, defaultConfig));
 
     debug("Registering bindings for " + descriptor.name + "..");
@@ -45,7 +53,7 @@ export class ComponentRegistry implements ComponentRegistryInterface, LookupServ
   }
 
   executeBinding(componentName: string, container: inversifyInterfaces.Container, scope = "root", ...args: any[]) {
-    if (typeof(this.registeredBindings[componentName]) === "undefined" || typeof(this.registeredBindings[componentName][scope]) === "undefined") return;
+    if (typeof this.registeredBindings[componentName] === "undefined" || typeof this.registeredBindings[componentName][scope] === "undefined") return;
     debug("Executing bindings for " + componentName + " in scope = " + scope + "..");
 
     if (scope === "root") {
