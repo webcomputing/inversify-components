@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import * as _cloneDeep from "lodash/cloneDeep";
 
 import { interfaces as inversifyInterfaces } from "inversify";
 import { ComponentRegistry as ComponentRegistryInterface, Component, Container, ComponentDescriptor, BindingDescriptor, LookupService, BindableContainer } from "../interfaces/interfaces";
@@ -37,7 +37,7 @@ export class ComponentRegistry implements ComponentRegistryInterface, LookupServ
 
   addFromDescriptor(descriptor: ComponentDescriptor) {
     let interfaces = descriptor.hasOwnProperty("interfaces") ? descriptor.interfaces : {};
-    let defaultConfig = descriptor.hasOwnProperty("defaultConfiguration") ? _.cloneDeep(descriptor.defaultConfiguration) : {};
+    let defaultConfig = descriptor.hasOwnProperty("defaultConfiguration") ? _cloneDeep(descriptor.defaultConfiguration) : {};
     this.add(new ComponentImpl(descriptor.name, interfaces, defaultConfig));
 
     debug("Registering bindings for " + descriptor.name + "..");
