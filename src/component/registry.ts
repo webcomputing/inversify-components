@@ -1,5 +1,3 @@
-import cloneDeep from "lodash/cloneDeep";
-
 import { interfaces as inversifyInterfaces } from "inversify";
 import {
   ComponentRegistry as ComponentRegistryInterface,
@@ -45,7 +43,7 @@ export class ComponentRegistry implements ComponentRegistryInterface, LookupServ
 
   addFromDescriptor(descriptor: ComponentDescriptor) {
     let interfaces = descriptor.hasOwnProperty("interfaces") ? descriptor.interfaces : {};
-    let defaultConfig = descriptor.hasOwnProperty("defaultConfiguration") ? cloneDeep(descriptor.defaultConfiguration) : {};
+    let defaultConfig = descriptor.hasOwnProperty("defaultConfiguration") ? (typeof descriptor.defaultConfiguration === "function" ? descriptor.defaultConfiguration() : descriptor.defaultConfiguration) : {};
     this.add(new ComponentImpl(descriptor.name, interfaces, defaultConfig));
 
     debug("Registering bindings for " + descriptor.name + "..");
