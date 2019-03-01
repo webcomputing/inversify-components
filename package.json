@@ -1,6 +1,6 @@
 {
   "name": "inversify-components",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Plugin based mini core framework. Combines InversifyJS with Extension Point Pattern / Service Provider Interfaces. Enables building components with inversify using binding descriptors.",
   "keywords": [
     "InversifyJS",
