@@ -143,7 +143,7 @@ export interface ComponentBinder {
 export interface ComponentDescriptor<OptionalConfiguration = {}> {
   name: string;
   interfaces?: InterfaceDescriptor;
-  defaultConfiguration?: OptionalConfiguration;
+  defaultConfiguration?: OptionalConfiguration | (() => OptionalConfiguration);
   bindings: BindingDescriptor;
 }
 
