@@ -19,8 +19,6 @@ gulp.task("lint", function() {
 
 });
 
-gulp.task("default", ["build-lib", "build-dts"]);
-
 //******************************************************************************
 //* BUILD
 //******************************************************************************
@@ -54,3 +52,5 @@ gulp.task("build-dts", function() {
     .dts.pipe(gulp.dest("dts"));
 
 });
+
+gulp.task("default", gulp.parallel("build-lib", "build-dts"));
