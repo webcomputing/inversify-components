@@ -20,6 +20,8 @@ Install inversify-components and set it as an dependency in your local package.j
 ```typescript
 import { ContainerImpl } from "inversify-components";
 let container = new ContainerImpl();
+// Also supports options:
+// let container = new ContainerImpl({ defaultScope: "Singleton" });
 ```
 
 2) Create your main application, which acts as the [composition root][1]:

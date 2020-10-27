@@ -1,0 +1,10 @@
+{
+  "name": "inversify-components",
+  "dockerFile": "Dockerfile",
+  "runArgs": [
+    "-u",
+    "node",
+    "--mount",
+    "type=volume,target=/workspaces/node_modules"
+  ],
+}

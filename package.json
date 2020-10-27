@@ -1,6 +1,6 @@
 {
   "name": "inversify-components",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "description": "Plugin based mini core framework. Combines InversifyJS with Extension Point Pattern / Service Provider Interfaces. Enables building components with inversify using binding descriptors.",
   "keywords": [
     "InversifyJS",
@@ -15,26 +15,26 @@
     "url": "https://github.com/webcomputing/inversify-components"
   },
   "peerDependencies": {
-    "inversify": "4.1.1",
-    "reflect-metadata": "^0.1.12"
+    "inversify": "^5.0.1",
+    "reflect-metadata": "^0.1.13"
   },
   "dependencies": {
-    "debug": "^3.1.0"
+    "debug": "^4.1.1"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.2",
-    "gulp": "^3.9.1",
-    "gulp-sourcemaps": "^1.12.1",
-    "gulp-tslint": "^8.1.2",
-    "gulp-typescript": "^3.2.4",
-    "inversify": "4.1.1",
-    "reflect-metadata": "^0.1.12",
-    "tslint": "^5.9.1",
-    "typescript": "^3.2.2"
+    "@types/debug": "^4.1.5",
+    "gulp": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-tslint": "^8.1.4",
+    "gulp-typescript": "^5.0.1",
+    "inversify": "^5.0.1",
+    "reflect-metadata": "^0.1.13",
+    "tslint": "^6.1.0",
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Antonius Ostermann <ostermann.antonius@gmail.com> (http://www.antonius-ostermann.de)",
+  "author": "Antonius Ostermann <ostermann.antonius@gmail.com> (https://www.antonius-ostermann.de)",
   "license": "MIT"
 }

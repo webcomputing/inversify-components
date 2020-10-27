@@ -10,8 +10,8 @@ export class Container implements interfaces.Container {
   readonly componentRegistry: interfaces.ComponentRegistry;
   private mainApp: interfaces.MainApplication;
 
-  constructor() {
-    this.inversifyInstance = new InversifyContainer();
+  constructor(containerOptions?: inversifyInterfaces.ContainerOptions) {
+    this.inversifyInstance = new InversifyContainer(containerOptions);
     this.componentRegistry = new ComponentRegistry();
     this.bindFrameworkComponent();
   }

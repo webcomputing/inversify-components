@@ -4,3 +4,5 @@ tsconfig.json
 gulpfile.js
 .gitignore
 .vscode
+.devcontainer
+CHANGELOG
