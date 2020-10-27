@@ -1,6 +1,6 @@
 {
   "name": "inversify-components",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Plugin based mini core framework. Combines InversifyJS with Extension Point Pattern / Service Provider Interfaces. Enables building components with inversify using binding descriptors.",
   "keywords": [
     "InversifyJS",
@@ -35,6 +35,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Antonius Ostermann <ostermann.antonius@gmail.com> (http://www.antonius-ostermann.de)",
+  "author": "Antonius Ostermann <ostermann.antonius@gmail.com> (https://www.antonius-ostermann.de)",
   "license": "MIT"
 }
